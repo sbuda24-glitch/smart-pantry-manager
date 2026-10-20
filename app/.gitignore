@@ -1,0 +1,17 @@
+
+# Gradle build output
+/build/
+/app/build/
+
+# Local machine settings
+/local.properties
+
+# Android Studio local settings
+/.idea/workspace.xml
+/.idea/tasks.xml
+/.idea/usage.statistics.xml
+/.idea/shelf/
+
+# OS files
+.DS_Store
+Thumbs.db
