@@ -15,6 +15,8 @@ import android.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
+import android.content.Intent;
+import android.widget.Button;
 
 public class PantryActivity extends AppCompatActivity {
 
@@ -32,6 +34,18 @@ public class PantryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pantry);
+
+        Button suggestedRecipesButton =
+                findViewById(R.id.suggestedRecipesButton);
+
+        suggestedRecipesButton.setOnClickListener(v -> {
+            Intent intent = new Intent(
+                    PantryActivity.this,
+                    SuggestedRecipesActivity.class
+            );
+
+            startActivity(intent);
+        });
 
         ingredientName = findViewById(R.id.ingredientName);
         ingredientQuantity = findViewById(R.id.ingredientQuantity);

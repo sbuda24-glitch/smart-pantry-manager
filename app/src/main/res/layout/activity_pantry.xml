@@ -56,6 +56,14 @@
         android:backgroundTint="#285943"
         android:textColor="#FFFFFF" />
 
+    <Button
+        android:id="@+id/suggestedRecipesButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Suggested Recipes" />
+
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
