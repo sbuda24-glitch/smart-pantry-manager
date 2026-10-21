@@ -63,6 +63,15 @@
         android:layout_marginTop="8dp"
         android:text="Suggested Recipes" />
 
+    <Button
+        android:id="@+id/settingsButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Settings / Profile"
+        android:backgroundTint="#285943"
+        android:textColor="#FFFFFF" />
+
 
     <TextView
         android:layout_width="match_parent"

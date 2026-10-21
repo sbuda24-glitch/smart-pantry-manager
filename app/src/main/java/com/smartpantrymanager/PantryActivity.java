@@ -38,6 +38,17 @@ public class PantryActivity extends AppCompatActivity {
         Button suggestedRecipesButton =
                 findViewById(R.id.suggestedRecipesButton);
 
+        Button settingsButton = findViewById(R.id.settingsButton);
+
+        settingsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(
+                    PantryActivity.this,
+                    SettingsActivity.class
+            );
+
+            startActivity(intent);
+        });
+
         suggestedRecipesButton.setOnClickListener(v -> {
             Intent intent = new Intent(
                     PantryActivity.this,
