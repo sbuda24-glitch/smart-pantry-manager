@@ -21,6 +21,9 @@ public class RecipeMatcher {
         ArrayList<Recipe> matchingRecipes = new ArrayList<>();
         ArrayList<Recipe> allRecipes = recipeDAO.getAllRecipes();
 
+// Load the pantry once instead of querying it repeatedly.
+        ArrayList<String> pantryIngredients = pantryDAO.getAllIngredients();
+
         for (Recipe recipe : allRecipes) {
 
             ArrayList<RecipeIngredient> requiredIngredients =
@@ -33,7 +36,7 @@ public class RecipeMatcher {
                 boolean found = false;
 
                 // Check whether the pantry contains enough of this ingredient.
-                for (String pantryItem : pantryDAO.getAllIngredients()) {
+                for (String pantryItem : pantryIngredients) {
 
                     String[] parts = pantryItem.split("\\|");
 

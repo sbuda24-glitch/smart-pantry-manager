@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -22,10 +23,15 @@ public class RecipeDetailActivity extends Activity {
 
         int recipeId = getIntent().getIntExtra("recipe_id", -1);
 
+        ScrollView scrollView = new ScrollView(this);
+
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setPadding(32, 32, 32, 32);
         layout.setBackgroundColor(Color.rgb(245, 247, 239));
+
+        scrollView.addView(layout);
+        setContentView(scrollView);
 
         TextView title = new TextView(this);
         title.setTextSize(26);
@@ -56,23 +62,24 @@ public class RecipeDetailActivity extends Activity {
         backButton.setText("Back to Recipes");
         layout.addView(backButton);
 
-        setContentView(layout);
-
         recipeDAO = new RecipeDAO(this);
         ingredientDAO = new RecipeIngredientDAO(this);
 
         Recipe selectedRecipe = null;
 
-        for (Recipe recipe : recipeDAO.getAllRecipes()) {
-            if (recipe.getId() == recipeId) {
-                selectedRecipe = recipe;
-                break;
+        if (recipeId > 0) {
+            for (Recipe recipe : recipeDAO.getAllRecipes()) {
+                if (recipe.getId() == recipeId) {
+                    selectedRecipe = recipe;
+                    break;
+                }
             }
         }
 
         if (selectedRecipe == null) {
             title.setText("Recipe not found");
-            ingredientsText.setText("");
+            ingredientsText.setText(
+                    "This recipe could not be found. Please return to the recipe list.");
             stepsText.setText("");
         } else {
             title.setText(selectedRecipe.getName());
@@ -84,7 +91,7 @@ public class RecipeDetailActivity extends Activity {
             StringBuilder details = new StringBuilder();
 
             for (RecipeIngredient ingredient : ingredients) {
-                details.append("• ")
+                details.append("- ")
                         .append(ingredient.getIngredientName())
                         .append(" - ")
                         .append(ingredient.getRequiredQuantity())
@@ -101,8 +108,6 @@ public class RecipeDetailActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-
         if (recipeDAO != null) {
             recipeDAO.close();
         }
@@ -110,5 +115,7 @@ public class RecipeDetailActivity extends Activity {
         if (ingredientDAO != null) {
             ingredientDAO.close();
         }
+
+        super.onDestroy();
     }
 }
