@@ -2,7 +2,9 @@
 package com.smartpantrymanager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class RecipeMatcher {
 
@@ -21,9 +23,49 @@ public class RecipeMatcher {
         ArrayList<Recipe> matchingRecipes = new ArrayList<>();
         ArrayList<Recipe> allRecipes = recipeDAO.getAllRecipes();
 
-// Load the pantry once instead of querying it repeatedly.
+        // Load pantry ingredients once.
         ArrayList<String> pantryIngredients = pantryDAO.getAllIngredients();
 
+        // Combine quantities for duplicate ingredients with matching units.
+        Map<String, Double> availableQuantities = new HashMap<>();
+
+        for (String pantryItem : pantryIngredients) {
+
+            String[] parts = pantryItem.split("\\|");
+
+            if (parts.length < 3) {
+                continue;
+            }
+
+            String pantryName = normaliseName(parts[1].trim());
+            String quantityAndUnit = parts[2].trim();
+            String[] quantityParts = quantityAndUnit.split("\\s+");
+
+            if (quantityParts.length < 2) {
+                continue;
+            }
+
+            try {
+                double quantity = Double.parseDouble(quantityParts[0]);
+                String unit = normaliseUnit(quantityParts[1]);
+
+                if (quantity < 0 || !Double.isFinite(quantity)) {
+                    continue;
+                }
+
+                String key = pantryName + "|" + unit;
+
+                availableQuantities.put(
+                        key,
+                        availableQuantities.getOrDefault(key, 0.0) + quantity
+                );
+
+            } catch (NumberFormatException e) {
+                // Skip pantry entries with invalid quantities.
+            }
+        }
+
+        // Check every recipe against the combined pantry quantities.
         for (Recipe recipe : allRecipes) {
 
             ArrayList<RecipeIngredient> requiredIngredients =
@@ -33,49 +75,17 @@ public class RecipeMatcher {
 
             for (RecipeIngredient required : requiredIngredients) {
 
-                boolean found = false;
+                String ingredientName =
+                        normaliseName(required.getIngredientName());
 
-                // Check whether the pantry contains enough of this ingredient.
-                for (String pantryItem : pantryIngredients) {
+                String unit = normaliseUnit(required.getRequiredUnit());
 
-                    String[] parts = pantryItem.split("\\|");
+                String key = ingredientName + "|" + unit;
 
-                    if (parts.length < 3) {
-                        continue;
-                    }
+                double available =
+                        availableQuantities.getOrDefault(key, 0.0);
 
-                    String pantryName = parts[1].trim();
-                    String quantityAndUnit = parts[2].trim();
-
-                    String[] quantityParts = quantityAndUnit.split("\\s+");
-
-                    if (quantityParts.length < 2) {
-                        continue;
-                    }
-
-                    double pantryQuantity;
-
-                    try {
-                        pantryQuantity = Double.parseDouble(quantityParts[0]);
-                    } catch (NumberFormatException e) {
-                        continue;
-                    }
-
-                    // FIX: Normalise the pantry unit too.
-                    String pantryUnit = normaliseUnit(quantityParts[1]);
-
-                    if (normaliseName(pantryName).equals(
-                            normaliseName(required.getIngredientName()))
-                            && pantryUnit.equals(
-                            normaliseUnit(required.getRequiredUnit()))
-                            && pantryQuantity >= required.getRequiredQuantity()) {
-
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (!found) {
+                if (available < required.getRequiredQuantity()) {
                     canMakeRecipe = false;
                     break;
                 }
@@ -90,6 +100,7 @@ public class RecipeMatcher {
     }
 
     private String normaliseName(String name) {
+
         String cleaned = name.toLowerCase(Locale.ROOT).trim();
 
         if (cleaned.endsWith("ies") && cleaned.length() > 3) {
@@ -106,17 +117,21 @@ public class RecipeMatcher {
     }
 
     private String normaliseUnit(String unit) {
+
         String cleaned = unit.toLowerCase(Locale.ROOT).trim();
 
         switch (cleaned) {
             case "pieces":
             case "pcs":
                 return "piece";
+
             case "grams":
                 return "g";
+
             case "millilitres":
             case "milliliters":
                 return "ml";
+
             default:
                 return cleaned;
         }
