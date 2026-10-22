@@ -1,22 +1,20 @@
-
 package com.smartpantrymanager;
 
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
-import android.app.AlertDialog;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
-import android.content.Intent;
-import android.widget.Button;
+
 
 public class PantryActivity extends AppCompatActivity {
 
@@ -27,7 +25,7 @@ public class PantryActivity extends AppCompatActivity {
 
     private ListView ingredientList;
     private PantryDAO pantryDAO;
-    private ArrayAdapter<String> adapter;
+    private IngredientAdapter adapter;
     private ArrayList<String> ingredients;
 
     @Override
@@ -69,12 +67,7 @@ public class PantryActivity extends AppCompatActivity {
         pantryDAO = new PantryDAO(this);
         ingredients = new ArrayList<>();
 
-        adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_list_item_1,
-                ingredients
-        );
-
+        adapter = new IngredientAdapter(this, ingredients);
         ingredientList.setAdapter(adapter);
 
         addButton.setOnClickListener(view -> addIngredient());
