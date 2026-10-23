@@ -1,10 +1,26 @@
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="20dp"
     android:background="#F5F7EF">
+
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/pantryToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#285943"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:title="Smart Pantry Manager"
+        app:titleTextColor="#FFFFFF" />
+
+
 
     <TextView
         android:layout_width="match_parent"

@@ -45,6 +45,10 @@ public class PantryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pantry);
+        androidx.appcompat.widget.Toolbar toolbar =
+                findViewById(R.id.pantryToolbar);
+
+        setSupportActionBar(toolbar);
 
         ingredientName = findViewById(R.id.ingredientName);
         ingredientQuantity = findViewById(R.id.ingredientQuantity);
@@ -83,6 +87,35 @@ public class PantryActivity extends AppCompatActivity {
                 startActivity(new android.content.Intent(
                         PantryActivity.this, SettingsActivity.class)));
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        getMenuInflater().inflate(R.menu.pantry_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        int itemId = item.getItemId();
+
+        if (itemId == R.id.menu_suggested_recipes) {
+            startActivity(new android.content.Intent(
+                    PantryActivity.this,
+                    SuggestedRecipesActivity.class));
+            return true;
+        }
+
+        if (itemId == R.id.menu_settings) {
+            startActivity(new android.content.Intent(
+                    PantryActivity.this,
+                    SettingsActivity.class));
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 
     private void addIngredient() {
         String name = ingredientName.getText().toString().trim();

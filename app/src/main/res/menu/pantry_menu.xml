@@ -1,0 +1,12 @@
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_suggested_recipes"
+        android:title="Suggested Recipes" />
+
+    <item
+        android:id="@+id/menu_settings"
+        android:title="Settings / Profile" />
+
+</menu>
