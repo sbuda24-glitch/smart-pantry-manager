@@ -17,6 +17,11 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
+            android:name=".AddEditIngredientActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
             android:name=".SuggestedRecipesActivity"
             android:exported="false" />
 

@@ -33,6 +33,15 @@ public class PantryActivity extends AppCompatActivity {
     private ArrayList<String> ingredients;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (pantryDAO != null && ingredientAdapter != null) {
+            loadIngredients();
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pantry);
@@ -54,7 +63,14 @@ public class PantryActivity extends AppCompatActivity {
 
         loadIngredients();
 
-        addButton.setOnClickListener(v -> addIngredient());
+        addButton.setOnClickListener(v -> {
+            android.content.Intent intent =
+                    new android.content.Intent(
+                            PantryActivity.this,
+                            AddEditIngredientActivity.class);
+
+            startActivity(intent);
+        });
 
         ingredientList.setOnItemClickListener((parent, view, position, id) ->
                 showIngredientOptions(position));
@@ -171,8 +187,19 @@ public class PantryActivity extends AppCompatActivity {
                 .setTitle(name)
                 .setItems(new String[]{"Edit", "Delete"}, (dialog, which) -> {
                     if (which == 0) {
-                        showEditDialog(
-                                ingredientId, name, quantity, unit, expiryDate);
+                        android.content.Intent intent =
+                                new android.content.Intent(
+                                        PantryActivity.this,
+                                        AddEditIngredientActivity.class);
+
+                        intent.putExtra("ingredient_id", ingredientId);
+                        intent.putExtra("ingredient_name", name);
+                        intent.putExtra("ingredient_quantity",
+                                String.valueOf(quantity));
+                        intent.putExtra("ingredient_unit", unit);
+                        intent.putExtra("ingredient_expiry", expiryDate);
+
+                        startActivity(intent);
                     } else {
                         confirmDelete(ingredientId, name);
                     }
